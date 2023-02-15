@@ -7,9 +7,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.springframework.util.StringUtils;
 import ru.sljuvi.shopmanager.entity.Product;
-import ru.sljuvi.shopmanager.entity.Shop;
 import ru.sljuvi.shopmanager.exception.InvalidFieldException;
 
 public class ProductDialog extends EntityDialog<Product> {
@@ -28,44 +25,27 @@ public class ProductDialog extends EntityDialog<Product> {
 
   private JButton buttonCancel;
 
-  private JComboBox<Shop> shopField;
-
   private JTextField nameField;
 
   private JTextField priceField;
 
-  private JTextField countField;
-
   public ProductDialog(JFrame parent, SaveFunction<Product> saveFunction,
-      RefreshGUIFunction refreshGUIFunction, Product entity, List<Shop> shops) {
+      RefreshGUIFunction refreshGUIFunction, Product entity) {
     super(parent, saveFunction, refreshGUIFunction, entity);
-    initShopField(shops);
     init(contentPane, buttonOK, buttonCancel);
     pack();
     setVisible(true);
   }
 
-  private void initShopField(List<Shop> shops) {
-    DefaultComboBoxModel<Shop> model = new DefaultComboBoxModel<>();
-    model.addAll(shops);
-    shopField.setModel(model);
-  }
-
   @Override
   protected void fillFields(Product entity) {
-    shopField.setSelectedItem(entity.getShop());
     nameField.setText(entity.getName());
     priceField.setText(entity.getPrice().toString());
-    countField.setText(entity.getCount().toString());
   }
 
   @Override
   protected void validateFields() throws InvalidFieldException {
     List<String> invalidFields = new ArrayList<>();
-
-    if (shopField.getSelectedItem() == null) {
-      invalidFields.add("магазин");
-    }
 
     if (!StringUtils.hasText(nameField.getText())) {
       invalidFields.add("название");
@@ -75,12 +55,6 @@ public class ProductDialog extends EntityDialog<Product> {
       Double.parseDouble(priceField.getText());
     } catch (NumberFormatException e) {
       invalidFields.add("цена");
-    }
-
-    try {
-      Integer.parseInt(countField.getText());
-    } catch (NumberFormatException e) {
-      invalidFields.add("количество");
     }
 
     if (!invalidFields.isEmpty()) {
@@ -95,10 +69,8 @@ public class ProductDialog extends EntityDialog<Product> {
 
   @Override
   protected void fillEntityFromFields(Product entity) {
-    entity.setShop((Shop) shopField.getSelectedItem());
     entity.setName(nameField.getText());
     entity.setPrice(Double.parseDouble(priceField.getText()));
-    entity.setCount(Integer.parseInt(countField.getText()));
   }
 
   {
@@ -147,50 +119,30 @@ public class ProductDialog extends EntityDialog<Product> {
         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     final JPanel panel3 = new JPanel();
-    panel3.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
+    panel3.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
     contentPane.add(panel3,
         new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
             null, 0, false));
     final JLabel label1 = new JLabel();
-    label1.setText("Магазин");
+    label1.setText("Название");
     panel3.add(label1,
         new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
     final JLabel label2 = new JLabel();
-    label2.setText("Название");
+    label2.setText("Цена");
     panel3.add(label2,
         new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    final JLabel label3 = new JLabel();
-    label3.setText("Цена");
-    panel3.add(label3,
-        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-            false));
-    final JLabel label4 = new JLabel();
-    label4.setText("Количество");
-    panel3.add(label4,
-        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-            false));
-    shopField = new JComboBox();
-    panel3.add(shopField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
-        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     nameField = new JTextField();
-    panel3.add(nameField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+    panel3.add(nameField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     priceField = new JTextField();
-    panel3.add(priceField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
-        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-    countField = new JTextField();
-    panel3.add(countField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+    panel3.add(priceField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }

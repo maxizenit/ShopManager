@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import ru.sljuvi.shopmanager.entity.Product;
+import ru.sljuvi.shopmanager.entity.ProductInShop;
 
 public class ProductReportGeneratorTests {
 
@@ -24,14 +25,18 @@ public class ProductReportGeneratorTests {
     ProductReportGenerator reportGenerator = new ProductReportGenerator();
     File file = Files.createTempFile("tempreport", null).toFile();
 
-    List<Product> products = new ArrayList<>();
+    List<ProductInShop> productsInShop = new ArrayList<>();
     Product product = new Product();
     product.setName("Nvidia RTX 3050");
     product.setPrice(20000.0);
-    product.setCount(5);
-    products.add(product);
 
-    reportGenerator.generate(file, products);
+    ProductInShop productInShop = new ProductInShop();
+    productInShop.setProduct(product);
+    productInShop.setCount(5);
+
+    productsInShop.add(productInShop);
+
+    reportGenerator.generate(file, productsInShop);
 
     String actual = new String(Files.readAllBytes(Path.of(file.getPath()))).replaceAll("\\r\\n?", "\n");
 
