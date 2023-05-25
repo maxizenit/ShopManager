@@ -10,7 +10,7 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
-  <groupId>ru.sljuvi</groupId>
+  <groupId>ru.kulakov</groupId>
   <artifactId>ShopManager</artifactId>
   <version>1.0</version>
   <name>ShopManager</name>
